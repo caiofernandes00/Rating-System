@@ -1,0 +1,83 @@
+version: '3'
+
+services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: rating_system_zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - rating_system_network
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: rating_system_kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+      - 9094:9094
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECT: rating_system_zookeeper:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LISTENERS: INTERNAL://:9092,OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://rating_system_kafka:9092,OUTSIDE://host.docker.internal:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+    volumes:
+      - ./fixtures/:/home/appuser/
+    networks:
+      - rating_system_network
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "nc -z localhost 9092 || exit -1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kafka-topics-generator:
+    image: confluentinc/cp-kafka:latest
+    container_name: rating_system_kafka-topics-generator
+    depends_on:
+      - kafka
+    command: >
+      bash -c
+        "sleep 5s &&
+        kafka-topics --create --topic=ratings --if-not-exists --bootstrap-server=rating_system_kafka:9092 && 
+        kafka-topics --create --topic=rating-averages --if-not-exists --bootstrap-server=rating_system_kafka:9092"
+    networks:
+      - rating_system_network
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:6.0.1
+    container_name: rating_system_control_center
+    hostname: control_center
+    depends_on:
+      - kafka
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'rating_system_kafka:9092'
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      PORT: 9021
+    networks:
+      - rating_system_network
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:6.0.1
+    container_name: rating_system_schema_registry
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema_registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'rating_system_kafka:9092'
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: 'WARN'
+    networks:
+      - rating_system_network
+
+networks:
+  rating_system_network:
+    driver: bridge
