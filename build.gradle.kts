@@ -49,7 +49,6 @@ dependencies {
     implementation("io.ktor:ktor-server-html-builder:$ktor_version")
     implementation("io.ktor:ktor-server-host-common:$ktor_version")
     implementation("io.ktor:ktor-websockets:$ktor_version")
-    implementation("com.github.gAmUssA:ktor-kafka:1913118fb3")
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     // Testing
