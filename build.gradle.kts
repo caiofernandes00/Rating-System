@@ -7,17 +7,9 @@ val kotlin_version: String by project
 val confluent_version: String by project
 val ak_version: String by project
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven("https://packages.confluent.io/maven")
-        maven("https://kotlin.bintray.com/ktor")
-        maven("https://jitpack.io")
-    }
-}
-
 plugins {
     kotlin("jvm") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.0"
     application
 }
 

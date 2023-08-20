@@ -15,12 +15,8 @@ fun main(args: Array<String>): Unit = EngineMain.main(args)
 
 fun Application.module(testing: Boolean = false) {
     val config = ApplicationConfig("kafka.conf")
+    val producer = createKafkaProducer<Long, Rating>(config)
 
     configureDefaultHeaders()
-    configureRouting()
-
-    val producer = createKafkaProducer<Long, Rating>(config)
-    producer.send(ratingsTopic, 1L, Rating(1L, 5.0)).get()
-    val consumer = createKafkaConsumer<Long, Double>(config, ratingsTopic)
-    consumer.assignment().forEach { println(it) }
+    configureRouting(producer)
 }
