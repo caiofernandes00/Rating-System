@@ -1,5 +1,6 @@
 package com.example.rating.adapter.kafka
 
+import com.example.rating.adapter.ktor.utils.toMap
 import io.ktor.server.config.*
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -12,20 +13,11 @@ private fun <K, V> buildConsumer(
     groupId: String = KAFKA_DEFAULT_GROUP_ID
 ): KafkaConsumer<K, V> {
     val consumerProperties = Properties().apply {
-        putAll(kafkaCommonConfig(config))
-        putAll(kafkaConsumerConfig(config))
+        putAll(config.toMap("ktor.kafka.properties"))
+        putAll(config.toMap("ktor.kafka.consumer"))
+        put("group.id", groupId)
         put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers(config))
     }
 
     return KafkaConsumer(consumerProperties)
-}
-
-fun <K, V> createKafkaConsumer(
-    config: ApplicationConfig,
-    topic: String,
-    groupId: String = KAFKA_DEFAULT_GROUP_ID
-): KafkaConsumer<K, V> {
-    val consumer = buildConsumer<K, V>(config, groupId)
-    consumer.subscribe(listOf(topic))
-    return consumer
 }

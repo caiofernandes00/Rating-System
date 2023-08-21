@@ -1,5 +1,6 @@
 package com.example.rating.adapter.kafka
 
+import com.example.rating.adapter.ktor.utils.toMap
 import io.ktor.server.config.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -11,8 +12,8 @@ import java.util.concurrent.Future
 
 fun <K, V> createKafkaProducer(config: ApplicationConfig): KafkaProducer<K, V> {
     val producerProperties = Properties().apply {
-        putAll(kafkaCommonConfig(config))
-        putAll(kafkaProducerConfig(config))
+        putAll(config.toMap("ktor.kafka.properties"))
+        putAll(config.toMap("ktor.kafka.producer"))
         put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers(config))
     }
 
