@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
     // kafka
+    implementation("org.apache.kafka:kafka-clients:$kafka_stream_version")
     implementation("org.apache.kafka:kafka-streams:$kafka_stream_version")
     implementation("io.confluent:kafka-json-schema-serializer:$confluent_version")
     implementation("io.confluent:kafka-streams-json-schema-serde:$confluent_version") {
@@ -46,6 +47,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     // Testing
     testImplementation("org.apache.kafka:kafka-streams-test-utils:$ak_version")
+    testImplementation("org.testcontainers:kafka")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation(kotlin("test"))
 }

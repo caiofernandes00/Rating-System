@@ -45,7 +45,7 @@ services:
       bash -c
         "sleep 5s &&
         kafka-topics --create --topic=ratings --if-not-exists --bootstrap-server=rating_system_kafka:9092 && 
-        kafka-topics --create --topic=rating-averages --if-not-exists --bootstrap-server=rating_system_kafka:9092"
+        kafka-topics --create --topic=ratings-average --if-not-exists --bootstrap-server=rating_system_kafka:9092"
     networks:
       - rating_system_network
 
