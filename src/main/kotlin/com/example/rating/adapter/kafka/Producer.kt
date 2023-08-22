@@ -1,6 +1,6 @@
 package com.example.rating.adapter.kafka
 
-import com.example.rating.adapter.ktor.utils.toMap
+import com.example.rating.adapter.extensions.toMap
 import io.ktor.server.config.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
