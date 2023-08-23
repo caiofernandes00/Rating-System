@@ -1,4 +1,4 @@
-package com.example.rating.adapter.kafka.admin
+package com.example.rating.adapter.kafka.config
 
 import com.example.rating.adapter.extensions.logger
 import com.example.rating.adapter.extensions.toMap
@@ -12,8 +12,8 @@ import org.apache.kafka.clients.admin.NewTopic
 import org.apache.kafka.clients.producer.ProducerConfig
 import java.util.*
 
-class KafkaConfig(configuration: Configuration) {
-    private val log = logger<KafkaConfig>()
+class KafkaAdminConfig(configuration: Configuration) {
+    private val log = logger<KafkaAdminConfig>()
     private val applicationConfig = configuration.applicationConfig
     private val topics = configuration.topics
 
@@ -39,13 +39,13 @@ class KafkaConfig(configuration: Configuration) {
             put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers(config))
         }
 
-    companion object Plugin : BaseApplicationPlugin<Application, Configuration, KafkaConfig> {
-        override val key: AttributeKey<KafkaConfig>
+    companion object Plugin : BaseApplicationPlugin<Application, Configuration, KafkaAdminConfig> {
+        override val key: AttributeKey<KafkaAdminConfig>
             get() = AttributeKey("kafka")
 
-        override fun install(pipeline: Application, configure: Configuration.() -> Unit): KafkaConfig {
+        override fun install(pipeline: Application, configure: Configuration.() -> Unit): KafkaAdminConfig {
             val configuration = Configuration().apply(configure)
-            val kafkaFeature = KafkaConfig(configuration)
+            val kafkaFeature = KafkaAdminConfig(configuration)
 
             kafkaFeature.createTopics()
             return kafkaFeature

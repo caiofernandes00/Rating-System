@@ -1,8 +1,9 @@
 package com.example.rating
 
-import com.example.rating.adapter.kafka.configureKafkaStream
+import com.example.rating.adapter.ktor.plugin.configureKafkaAdmin
 import com.example.rating.adapter.kafka.createKafkaConsumer
 import com.example.rating.adapter.kafka.createKafkaProducer
+import com.example.rating.adapter.kafka.processAverageRating
 import com.example.rating.adapter.kafka.subscribe
 import com.example.rating.adapter.ktor.plugin.configureDefaultHeaders
 import com.example.rating.adapter.ktor.plugin.configureHttp
@@ -26,5 +27,6 @@ fun Application.producerConsumerModule(testing: Boolean = false) {
 }
 
 fun Application.streamModule(testing: Boolean = false) {
-    configureKafkaStream(kafkaConfig)
+    configureKafkaAdmin(kafkaConfig)
+    processAverageRating(kafkaConfig)
 }
