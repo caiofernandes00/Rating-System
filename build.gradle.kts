@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val logback_version: String by project
 val ktor_version: String by project
 val kafka_stream_version: String by project
+val kafka_test_container: String by project
 val kotlin_version: String by project
 val confluent_version: String by project
 val ak_version: String by project
@@ -10,11 +11,33 @@ val ak_version: String by project
 plugins {
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.serialization") version "1.9.0"
+    id("io.ktor.plugin") version "2.3.3"
     application
+}
+
+ktor {
+    docker {
+        localImageName.set("my-custom-image-name")
+        imageTag.set("alpha")
+    }
 }
 
 group = "org.eventdriven"
 version = "1.0-SNAPSHOT"
+
+application {
+    mainClass.set("io.ktor.server.netty.EngineMain")
+
+    val isDevelopment: Boolean = project.ext.has("development")
+    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+}
+
+ktor {
+    docker {
+        localImageName.set("rating-system")
+        imageTag.set("alpha")
+    }
+}
 
 repositories {
     mavenCentral()
@@ -47,7 +70,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     // Testing
     testImplementation("org.apache.kafka:kafka-streams-test-utils:$ak_version")
-    testImplementation("org.testcontainers:kafka")
+    testImplementation("org.testcontainers:kafka:$kafka_test_container")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation(kotlin("test"))
 }

@@ -19,11 +19,25 @@ topic rating-averages.
 ## Running the project
 
 ```shell
-docker-compose up -d
-```
-and then
-```shell
+docker-compose up -d && \
 ./gradlew run
+```
+
+using the docker plugin
+
+```shell
+docker-compose up -d && \
+./gradlew buildImage && \
+./gradlew runDocker
+```
+
+on pipelines
+
+```shell
+docker-compose up -d && \
+./gradlew build
+docker build -t rating-system:latest .
+# ... Here goes the commands to publish the image to the registry
 ```
 
 ## Credits
