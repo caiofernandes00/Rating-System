@@ -10,16 +10,8 @@ val ak_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.0"
-    kotlin("plugin.serialization") version "1.9.0"
     id("io.ktor.plugin") version "2.3.3"
-    application
-}
-
-ktor {
-    docker {
-        localImageName.set("my-custom-image-name")
-        imageTag.set("alpha")
-    }
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 group = "org.eventdriven"
@@ -28,15 +20,8 @@ version = "1.0-SNAPSHOT"
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
 
-    val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
-}
-
-ktor {
-    docker {
-        localImageName.set("rating-system")
-        imageTag.set("alpha")
-    }
+    val currentEnvironment: String = System.getProperty("KTOR_ENV") ?: "local"
+    applicationDefaultJvmArgs = listOf("-Dio.ktor.env=$currentEnvironment")
 }
 
 repositories {

@@ -14,7 +14,8 @@ import io.ktor.server.config.*
 import io.ktor.server.netty.*
 import java.time.Duration
 
-val kafkaConfig = ApplicationConfig("kafka.conf")
+val currentEnv: String = System.getProperty("io.ktor.env") ?: "local"
+val kafkaConfig = ApplicationConfig("kafka.$currentEnv.conf")
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
