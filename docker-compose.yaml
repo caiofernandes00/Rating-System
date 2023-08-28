@@ -16,6 +16,17 @@ services:
     networks:
       - rating_system_network
 
+  postgres:
+    image: postgres:14-alpine
+    container_name: rating_system_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rates
+    ports:
+      - "5432:5432"
+    networks:
+      - rating_system_network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest

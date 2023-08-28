@@ -7,6 +7,9 @@ val kafka_test_container: String by project
 val kotlin_version: String by project
 val confluent_version: String by project
 val ak_version: String by project
+val h2_version: String by project
+val postgres_version: String by project
+val exposed_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.0"
@@ -39,6 +42,12 @@ dependencies {
     implementation("io.confluent:kafka-streams-json-schema-serde:$confluent_version") {
         exclude("org.apache.kafka", "kafka-clients")
     }
+    // Database
+    implementation("com.h2database:h2:$h2_version")
+    implementation("org.postgresql:postgresql:$postgres_version")
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     // Log

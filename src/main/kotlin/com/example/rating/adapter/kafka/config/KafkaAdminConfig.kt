@@ -18,7 +18,7 @@ class KafkaAdminConfig(configuration: Configuration) {
     private val topics = configuration.topics
 
     data class Configuration(
-        var applicationConfig: ApplicationConfig = ApplicationConfig("kafka.local.docker.conf"),
+        var applicationConfig: ApplicationConfig = ApplicationConfig("kafka/kafka.local.docker.conf"),
         var topics: List<NewTopic> = emptyList()
     )
 

@@ -2,6 +2,7 @@ package com.example.rating.adapter.ktor.plugins
 
 import com.example.rating.adapter.kafka.send
 import com.example.rating.adapter.ktor.Html.Html
+import com.example.rating.adapter.repository.RatingsRepository
 import com.example.rating.domain.Rating
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -18,7 +19,8 @@ import org.apache.kafka.clients.producer.KafkaProducer
 data class Status(val message: String)
 
 fun Application.configureHttp(
-    kafkaProducer: KafkaProducer<Long, Rating>
+    kafkaProducer: KafkaProducer<Long, Rating>,
+    ratingsAverageRepository: RatingsRepository
 ) {
     install(ContentNegotiation) {
         json()
@@ -31,10 +33,11 @@ fun Application.configureHttp(
             )
         }
 
-        post("/rating") {
+        post("/average") {
             val rating = call.receive<Rating>()
 
             kafkaProducer.send("ratings", rating.movieId, rating)
+            ratingsAverageRepository.create(rating)
             call.respond(HttpStatusCode.Accepted, Status("Rating accepted"))
         }
     }
