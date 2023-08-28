@@ -1,4 +1,4 @@
-package com.example.rating.adapter.ktor.plugin
+package com.example.rating.adapter.ktor.plugins
 
 import io.ktor.server.application.*
 import io.ktor.server.plugins.defaultheaders.*

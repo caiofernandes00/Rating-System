@@ -13,7 +13,7 @@ topic rating-averages.
 
 3- The application will consume the rating-averages using a websocket connection.
 
-> See the com.example.rating.adapter.ktor.plugin.Http and com.example.rating.adapter.ktor.plugin.Websockets in order to
+> See the com.example.rating.adapter.ktor.plugins.Http and com.example.rating.adapter.ktor.plugins.Websockets in order to
 > see the routes
 
 ## Credits

@@ -1,4 +1,4 @@
-package com.example.rating.adapter.ktor.plugin
+package com.example.rating.adapter.ktor.plugins
 
 import com.example.rating.adapter.kafka.config.KafkaAdminConfig
 import com.example.rating.adapter.kafka.ratingsAverageTopic

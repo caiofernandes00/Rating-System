@@ -4,10 +4,10 @@ import com.example.rating.adapter.kafka.createKafkaConsumer
 import com.example.rating.adapter.kafka.createKafkaProducer
 import com.example.rating.adapter.kafka.processAverageRating
 import com.example.rating.adapter.kafka.subscribe
-import com.example.rating.adapter.ktor.plugin.configureDefaultHeaders
-import com.example.rating.adapter.ktor.plugin.configureHttp
-import com.example.rating.adapter.ktor.plugin.configureKafkaAdmin
-import com.example.rating.adapter.ktor.plugin.configureWebsockets
+import com.example.rating.adapter.ktor.plugins.configureDefaultHeaders
+import com.example.rating.adapter.ktor.plugins.configureHttp
+import com.example.rating.adapter.ktor.plugins.configureKafkaAdmin
+import com.example.rating.adapter.ktor.plugins.configureWebsockets
 import com.example.rating.domain.Rating
 import io.ktor.server.application.*
 import io.ktor.server.config.*

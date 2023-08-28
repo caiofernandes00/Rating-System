@@ -1,4 +1,4 @@
-package com.example.rating.adapter.ktor.plugin
+package com.example.rating.adapter.ktor.plugins
 
 import com.example.rating.adapter.extensions.logger
 import com.example.rating.domain.Rating
