@@ -50,7 +50,3 @@ fun Application.producerConsumerModule(testing: Boolean = false) {
     configureHttp(producer, ratingsRepository)
 }
 
-fun Application.databaseModule(testing: Boolean = false) {
-    configureDatabase(databaseConfig)
-}
-
