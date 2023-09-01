@@ -12,6 +12,7 @@ import com.example.rating.domain.Rating
 import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.netty.*
+import kotlinx.coroutines.runBlocking
 import java.time.Duration
 
 val currentEnv: String = System.getenv("KTOR_ENV") ?: "local"
@@ -26,17 +27,19 @@ fun Application.kafkaModule(testing: Boolean = false) {
     configureKafkaAdmin(kafkaConfig)
     val ratingsAverageRepository = RatingsAverageRepository(dbConnect)
 
-    val streams = Stream(kafkaConfig, ratingsAverageRepository).processAverageRating()
+    runBlocking {
+        val streams = Stream(kafkaConfig, ratingsAverageRepository).processAverageRating()
 
-    environment.monitor.subscribe(ApplicationStarted) {
-        streams.cleanUp()
-        streams.start()
-        log.info("Kafka Streams started")
-    }
+        environment.monitor.subscribe(ApplicationStarted) {
+            streams.cleanUp()
+            streams.start()
+            log.info("Kafka Streams started")
+        }
 
-    environment.monitor.subscribe(ApplicationStopped) {
-        log.info("Kafka Streams stopped")
-        streams.close(Duration.ofSeconds(5))
+        environment.monitor.subscribe(ApplicationStopped) {
+            log.info("Kafka Streams stopped")
+            streams.close(Duration.ofSeconds(5))
+        }
     }
 }
 

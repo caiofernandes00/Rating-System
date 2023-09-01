@@ -33,7 +33,7 @@ fun Application.configureHttp(
             )
         }
 
-        post("/average") {
+        post("/rate") {
             val rating = call.receive<Rating>()
 
             kafkaProducer.send("ratings", rating.movieId, rating)
