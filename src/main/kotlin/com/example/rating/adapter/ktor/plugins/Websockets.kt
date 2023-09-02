@@ -1,7 +1,7 @@
 package com.example.rating.adapter.ktor.plugins
 
 import com.example.rating.adapter.extensions.logger
-import com.example.rating.domain.Rating
+import com.example.rating.domain.RatingAverage
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -49,7 +49,7 @@ private suspend fun DefaultWebSocketServerSession.poll(kafkaConsumer: KafkaConsu
             .forEach {
                 outgoing.send(
                     Frame.Text(
-                        Rating(it.key(), it.value()).toString()
+                        RatingAverage(it.key(), it.value()).toString()
                     )
                 )
             }

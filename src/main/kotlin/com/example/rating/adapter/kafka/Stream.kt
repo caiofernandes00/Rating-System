@@ -1,5 +1,6 @@
 package com.example.rating.adapter.kafka
 
+import com.example.rating.adapter.extensions.logger
 import com.example.rating.adapter.extensions.toMap
 import com.example.rating.adapter.repository.RatingsAverageRepository
 import com.example.rating.domain.CountAndSum
@@ -27,6 +28,8 @@ class Stream(
     private val config: ApplicationConfig,
     private val ratingsAverageRepository: RatingsAverageRepository
 ) {
+    private val logger = logger<Stream>()
+
     suspend fun processAverageRating(): KafkaStreams {
         val properties = kafkaStreamProperties(config)
         val streamsBuilder = StreamsBuilder()
@@ -47,7 +50,10 @@ class Stream(
         streamsBuilder: StreamsBuilder,
         properties: Properties
     ): Topology {
-        val ratingStream: KStream<Long, Rating> = ratingStream(streamsBuilder, properties)
+        val ratingStream: KStream<Long, Rating> = streamsBuilder.stream(
+            ratingsTopic,
+            Consumed.with(Long(), jsonSchemaSerde(properties, true))
+        )
 
         getRatingAverageTable(
             ratingStream,
@@ -56,16 +62,6 @@ class Stream(
         )
 
         return streamsBuilder.build()
-    }
-
-    private fun ratingStream(
-        streamsBuilder: StreamsBuilder,
-        properties: Properties
-    ): KStream<Long, Rating> {
-        return streamsBuilder.stream(
-            ratingsTopic,
-            Consumed.with(Long(), jsonSchemaSerde(properties, true))
-        )
     }
 
     private suspend fun getRatingAverageTable(
@@ -102,9 +98,12 @@ class Stream(
     }
 
     private suspend fun saveToDatabase(stream: KStream<Long, Double>) {
+
         val coroutineScope = CoroutineScope(Dispatchers.Default)
 
         stream.foreach { key, average ->
+            logger.info("Saving average rating to database $key, $average")
+
             coroutineScope.launch {
                 ratingsAverageRepository.create(RatingAverage(key, average))
             }
@@ -118,10 +117,13 @@ class Stream(
         val schemaSerde = KafkaJsonSchemaSerde(V::class.java)
         val crSource = properties[BASIC_AUTH_CREDENTIALS_SOURCE]
         val uiConfig = properties[USER_INFO_CONFIG]
+        val schemaRegistryUrl = properties[SCHEMA_REGISTRY_URL_CONFIG]
 
-        val map = mutableMapOf(
-            SCHEMA_REGISTRY_URL_CONFIG to properties[SCHEMA_REGISTRY_URL_CONFIG],
-        )
+        val map = mutableMapOf<String, Any>()
+
+        schemaRegistryUrl?.let {
+            map[SCHEMA_REGISTRY_URL_CONFIG] = schemaRegistryUrl
+        }
         crSource?.let {
             map[BASIC_AUTH_CREDENTIALS_SOURCE] = crSource
         }
@@ -136,5 +138,3 @@ class Stream(
     private inline fun <reified K, reified V> producedWith(): Produced<K, V> =
         Produced.with(serdeFrom(K::class.java), serdeFrom(V::class.java))
 }
-
-

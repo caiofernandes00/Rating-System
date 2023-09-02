@@ -1,6 +1,9 @@
 package com.example.rating
 
-import com.example.rating.adapter.kafka.*
+import com.example.rating.adapter.kafka.Stream
+import com.example.rating.adapter.kafka.createKafkaConsumer
+import com.example.rating.adapter.kafka.createKafkaProducer
+import com.example.rating.adapter.kafka.subscribe
 import com.example.rating.adapter.ktor.plugins.configureDefaultHeaders
 import com.example.rating.adapter.ktor.plugins.configureHttp
 import com.example.rating.adapter.ktor.plugins.configureKafkaAdmin
