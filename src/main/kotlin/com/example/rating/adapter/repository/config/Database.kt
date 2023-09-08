@@ -8,7 +8,7 @@ import java.util.*
 fun configureDatabase(config: ApplicationConfig): Database {
     val dbProps = getDbProperties(config)
     return Database.connect(
-        url = "jdbc:postgresql://${dbProps.getProperty("host")}:${dbProps.getProperty("port")}/${dbProps.getProperty("database")}",
+        url = dbProps.getProperty("url"),
         user = dbProps.getProperty("user"),
         driver = dbProps.getProperty("driver"),
         password = dbProps.getProperty("password")
